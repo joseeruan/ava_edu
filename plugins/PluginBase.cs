@@ -188,15 +188,16 @@ namespace plugins_avaEdu.plugins
 
             ServiceProvider = serviceProvider;
 
-            Logger = serviceProvider.Get<ILogger>();
+            // Try to get optional services (some may not be available in test environments like FakeXrmEasy)
+            try { Logger = (ILogger)serviceProvider.GetService(typeof(ILogger)); } catch { }
 
-            PluginExecutionContext = serviceProvider.Get<IPluginExecutionContext>();
+            PluginExecutionContext = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
 
             TracingService = new LocalTracingService(serviceProvider);
 
-            NotificationService = serviceProvider.Get<IServiceEndpointNotificationService>();
+            try { NotificationService = (IServiceEndpointNotificationService)serviceProvider.GetService(typeof(IServiceEndpointNotificationService)); } catch { }
 
-            OrgSvcFactory = serviceProvider.Get<IOrganizationServiceFactory>();
+            OrgSvcFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
 
             PluginUserService = serviceProvider.GetOrganizationService(PluginExecutionContext.UserId); // User that the plugin is registered to run as, Could be same as current user.
 
